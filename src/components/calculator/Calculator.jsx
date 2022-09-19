@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
+import { useEffect } from 'react'
 import Button from '../button/Button'
 import Row from '../row/Row'
 
 const Calculator = ({
-  className,
-  clickHandler
+  className
 }) => {
 
   const [displayText, setDisplayText] = useState('0')
@@ -13,22 +13,35 @@ const Calculator = ({
   const [operator, setOperator] = useState(null)
   const [decimal, setDecimal] = useState(false)
   const [clearDisplay, setClearDisplay] = useState(false)
+  const [secondOperator, setSecondOperator] = useState(null) //tells us to evaluate
+
+  useEffect(() => {
+    if (secondOperator) {
+      const result = `${operandA} ${operator} ${displayText}`
+      setDisplayText(eval(result))
+      setOperandA(eval(result))
+      setOperator(secondOperator)
+    }
+  }, [secondOperator])
 
   const numberHandler = number => {
+    if(secondOperator) {
+      setSecondOperator(null)
+    }
     // clear display after operator is entered and first 
     // digit for opB is entered
-    if(clearDisplay) {
+    if (clearDisplay) {
       setDisplayText(number)
       setClearDisplay(false)
       return
     }
 
     // decimal allowed just once in a num
-    if(decimal &&  number == '.') {
+    if (decimal && number === '.') {
       return
     }
     // set decimal flag once a decimal is used
-    if(number == '.') {
+    if (number === '.') {
       setDecimal(true)
     }
     //default 
@@ -38,15 +51,20 @@ const Calculator = ({
     })
   }
 
-  const operatorHandler = operator => {
-    if (operator == '-' && operandA == 0 && displayText == 0) {
+  const operatorHandler = operatorParam => {
+    if (operatorParam === '-' && operandA === 0 && displayText === 0) {
       setDisplayText('-')
       return
     }
-    
+    if (operator) {
+      setSecondOperator(operatorParam)
+      setClearDisplay(true)
+      return
+    }
+
     setClearDisplay(true)
     setOperandA(displayText)
-    setOperator(operator)
+    setOperator(operatorParam)
     setDecimal(false)
   }
 
@@ -59,6 +77,7 @@ const Calculator = ({
     // setOperandB(0)
     setDecimal(false)
     setOperator(null)
+    setSecondOperator(null)
   }
   return (<>
     <Row>
