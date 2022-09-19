@@ -9,55 +9,13 @@ const Calculator = ({
 
   const [displayText, setDisplayText] = useState('0')
   const [operandA, setOperandA] = useState(0)
-  // const [operandB, setOperandB] = useState(0)
   const [operator, setOperator] = useState(null)
   const [decimal, setDecimal] = useState(false)
   const [clearDisplay, setClearDisplay] = useState(false)
   const [secondOperator, setSecondOperator] = useState(null) //tells us to evaluate
 
-  const configArray = [
-    [
-      {
-        display: '1',
-        fn: () => numberHandler(1)
-      },
-      {
-        display: '2',
-        fn: () => numberHandler(2)
-      },
-      {
-        display: '3',
-        fn: () => numberHandler(3)
-      }
-    ],
-    [
-      {
-        display: '4',
-        fn: () => numberHandler(4)
-      },
-      {
-        display: '5',
-        fn: () => numberHandler(5)
-      },
-      {
-        display: '6',
-        fn: () => numberHandler(6)
-      }
-    ],
-    [
-      {
-        display: '7',
-        fn: () => numberHandler(7)
-      },
-      {
-        display: '8',
-        fn: () => numberHandler(8)
-      },
-      {
-        display: '9',
-        fn: () => numberHandler(9)
-      }
-    ],
+  const configArray = [[1, 2, 3],[4, 5, 6],[7, 8, 9]]
+  const configArray2 = [
     [
       {
         display: 'C',
@@ -78,39 +36,10 @@ const Calculator = ({
         fn: () => numberHandler('.')
       }
     ],
-    [
-      {
-        display: '+',
-        className: 'large-btn',
-        fn: () => operatorHandler('+')
-      },
-      {
-        display: '-',
-        className: 'large-btn',
-        fn: () => operatorHandler('-')
-      }
-    ],
-    [
-      {
-        display: 'x',
-        className: 'large-btn',
-        fn: () => operatorHandler('*')
-      },
-      {
-        display: '/',
-        className: 'large-btn',
-        fn: () => operatorHandler('/')
-      }
-    ],
-    [
-      {
-        val: '=',
-        display: '=',
-        className: 'x-large-btn',
-        fn: () => solutionHandler('=')
-      }
-    ]
   ]
+
+  const configArray3 = [['+', '-', '*', '/']]
+
   useEffect(() => {
     if (secondOperator) {
       const result = `${operandA} ${operator} ${displayText}`
@@ -179,15 +108,45 @@ const Calculator = ({
       <div className="display">{displayText}</div>
     </Row>
     {configArray.map(row => <Row>
-      {row.map(el => <>
+      {row.map((el, idx) => <>
         <Button
-          className={el.className}
+          key={idx}
+          clickHandler={() => numberHandler(el)}
+          text={el}
+        >
+        </Button>
+      </>)}
+    </Row>)}
+
+    {configArray2.map(row => <Row>
+      {row.map((el, idx) => <>
+        <Button
+          key={idx}
           clickHandler={el.fn}
           text={el.display}
         >
         </Button>
       </>)}
     </Row>)}
+    {configArray3.map(row => <Row>
+      {row.map((el, idx) => <>
+        <Button
+          key={idx}
+          className={'large-btn'}
+          clickHandler={() => operatorHandler(el)}
+          text={el}
+        >
+        </Button>
+      </>)}
+    </Row>)}
+    <Row>
+      <Button 
+      text={'='}
+      clickHandler={() => solutionHandler('=')}
+      className= {'x-large-btn'}
+      >
+      </Button>
+    </Row>
   </>
 }
 export default Calculator
